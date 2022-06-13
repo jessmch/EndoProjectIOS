@@ -15,16 +15,17 @@ import MobileCoreServices
 class DisplayViewController: UIViewController {
 
     
-    @IBOutlet weak var rewindButton: UIButton!
-    @IBOutlet weak var pauseButton: UIButton!
-    @IBOutlet weak var startButton: UIButton!
-    @IBOutlet weak var darkModeLabel: UILabel!
-    @IBOutlet weak var darkModeToggle: UISwitch!
-    @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var rewindButton: UIButton! // Rewind button
+    @IBOutlet weak var pauseButton: UIButton! // Pause button
+    @IBOutlet weak var startButton: UIButton! // Start button
+    @IBOutlet weak var darkModeLabel: UILabel! // Dark Mode label
+    @IBOutlet weak var darkModeToggle: UISwitch! // Dark Mode Toggle (interactive)
+    @IBOutlet weak var imageView: UIImageView! // the image view
 
-    var images: [UIImage]!
-    var animatedImage: UIImage!
-
+    // In this code, I have included 2 arrays of images for testing purposes
+    // Please only test 1 array at a time by remove the "/*" and "*/" at the beginning and the end
+    var images: [UIImage]! // Array of Images
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -34,7 +35,8 @@ class DisplayViewController: UIViewController {
         clickingPause()
         clickingRewind()
 
-        // array of 300 images
+        // Array of 300 images (First test)
+    
         /*
          images = [UIImage(named: "ezgif-frame-1.jpg")!.resized(to: CGSize(width: 400, height: 400)),
                    UIImage(named: "ezgif-frame-2.jpg")!.resized(to: CGSize(width: 400, height: 400)),
@@ -337,6 +339,8 @@ class DisplayViewController: UIViewController {
                    UIImage(named: "ezgif-frame-299.jpg")!.resized(to: CGSize(width: 400, height: 400)),
                    UIImage(named: "ezgif-frame-300.jpg")!.resized(to: CGSize(width: 400, height: 400))]
          */
+        
+        // Array of 500 images (Second Test)
         
         images = [UIImage(named: "0001.jpg")!,
                   UIImage(named: "0002.jpg")!,
@@ -835,14 +839,12 @@ class DisplayViewController: UIViewController {
                   UIImage(named: "0495.jpg")!, UIImage(named: "0496.jpg")!, UIImage(named: "0497.jpg")!, UIImage(named: "0498.jpg")!, UIImage(named: "0499.jpg")!, UIImage(named: "0500.jpg")!]
         
         
-        //imageView.animationImages = images
-        // alterImage()
-        //let  imageView =  UIImageView()
-        imageView.animationImages = images //images is your array
+        imageView.animationImages = images // Convert the images to animated version
         
          
     }
     
+    // Dark mode implementation
     func darkModeToggleFunc()
     {
         view.addSubview(darkModeToggle)
@@ -852,44 +854,51 @@ class DisplayViewController: UIViewController {
     
     @objc func darkModeAction(  toggle: UISwitch)
     {
-        if toggle.isOn
+        if toggle.isOn // if toggle is Off
         {
-            view.backgroundColor = .black
-            darkModeLabel.textColor = .white
+            view.backgroundColor = .black // then change background to black
+            darkModeLabel.textColor = .white // change text to black
         }
         
-        else
+        else // if toggle is Off
         {
       
-            view.backgroundColor = .white
-            darkModeLabel.textColor = .black
+            view.backgroundColor = .white // then change background to white
+            darkModeLabel.textColor = .black // change text to black
             
         }
         
     }
     
     
+    // Start button
+    // It can be used to start the animated images, and/or can be used to resume
+    
     func clickingStart()
     {
         startButton.addTarget(self, action: #selector(buttonClicked), for: .touchUpInside)
     }
+    
     @objc func buttonClicked(_ sender: Any) {
         
         imageView.startAnimating()
 
-        self.resumeLayer(layer: imageView.layer)
+        self.resumeLayer(layer: imageView.layer) // resume the animation
     }
+    
     func resumeLayer(layer: CALayer) {
         let pausedTime = layer.timeOffset
-        layer.speed = 1.0
+        layer.speed = 1.0 // normal speed
         layer.timeOffset = 0.0
         layer.beginTime = 0.0
-        let timeSincePause = layer.convertTime(CACurrentMediaTime(), from: nil) - pausedTime
-        layer.beginTime = timeSincePause
+        let timeSincePause = layer.convertTime(CACurrentMediaTime(), from: nil) - pausedTime // calculate which layer to display when clicking resume
+        layer.beginTime = timeSincePause // if click resume, then start where we previously pause
     }
     
     
     
+    // Pause button
+    // It can be used to pause the animated images
     
     func clickingPause()
     {
@@ -901,12 +910,14 @@ class DisplayViewController: UIViewController {
     
     
     func pauseLayer(layer: CALayer) {
-        let pausedTime = layer.convertTime(CACurrentMediaTime(), from: nil)
+        let pausedTime = layer.convertTime(CACurrentMediaTime(), from: nil) // calculate which image to pause, which is current image
         layer.speed = 0.0
         layer.timeOffset = pausedTime
     }
     
     
+    // Rewind button
+    // It can be used to rewind the animation (meaning to go back to a certain point of the animated images)
     func clickingRewind()
     {
         rewindButton.addTarget(self, action: #selector(buttonClickedRewind), for: .touchUpInside)
@@ -918,6 +929,7 @@ class DisplayViewController: UIViewController {
     
     
     func rewindLayer(layer: CALayer) {
+        // Calculate which image to go to when clicking Rewind. Here, I'm not sure how much frames it will go back (I'm still trying to figure out; I only found out that subtracting 1 works.
         let pausedTime = layer.convertTime(CACurrentMediaTime(), from: nil) - 1
         layer.speed = 0.0
         layer.timeOffset = pausedTime
@@ -926,6 +938,7 @@ class DisplayViewController: UIViewController {
 }
 
 
+// Function to convert image dimension (which is to 400x400 per requirement)
 extension UIImage {
     func resized(to size: CGSize) -> UIImage {
         return UIGraphicsImageRenderer(size: size).image { _ in
