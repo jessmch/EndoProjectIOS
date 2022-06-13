@@ -1,6 +1,9 @@
 CALIT2 Endoscope Research Project
+
 Author: Chau Ho
+
 Area: iOS App Development
+
 =================================================
 
 The implementations that I have done in this project are as follows:
